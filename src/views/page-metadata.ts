@@ -5,6 +5,7 @@ import { getDictionary } from "@/i18n/get-dictionary";
 import { getToolContent } from "@/i18n/get-tool-content";
 import { blogPath, getPost } from "@/lib/blog";
 import { ogImagePath } from "@/lib/og";
+import { ourAppsPath, privacyPath } from "@/lib/our-apps";
 import { buildMetadata } from "@/lib/seo";
 import { siteConfig } from "@/lib/site";
 import { categoryPath, toolPath, type ToolCategory, type ToolSlug } from "@/lib/tools";
@@ -94,5 +95,27 @@ export function blogPostMetadata(locale: Locale, slug: string): Metadata {
     publishedTime: post.date,
     modifiedTime: post.updated,
     availableLocales: locales.filter((other) => getPost(other, slug)),
+  });
+}
+
+export function ourAppsMetadata(locale: Locale): Metadata {
+  const text = getDictionary(locale).ourApps;
+  return buildMetadata({
+    locale,
+    path: ourAppsPath,
+    title: text.metaTitle,
+    description: text.metaDescription,
+    image: ogImagePath(locale, "apps"),
+  });
+}
+
+export function privacyMetadata(locale: Locale): Metadata {
+  const text = getDictionary(locale).privacyPage;
+  return buildMetadata({
+    locale,
+    path: privacyPath,
+    title: text.metaTitle,
+    description: text.metaDescription,
+    image: ogImagePath(locale, "privacy"),
   });
 }

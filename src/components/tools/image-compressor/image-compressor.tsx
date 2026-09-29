@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileDropzone } from "@/components/ui/file-dropzone";
 import { ControlSection, RangeField, SegmentedControl } from "@/components/ui/form-controls";
+import { MobileActionBar } from "@/components/ui/mobile-action-bar";
 import { cn } from "@/lib/cn";
 import { CompareSlider } from "../compare-slider";
 import { ToolEmptyState } from "../tool-empty-state";
@@ -156,92 +157,122 @@ export function ImageCompressor({ locale, strings, common, dropzone }: ImageComp
   }
 
   return (
-    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
-      <Card className="space-y-8 p-5 sm:p-6">
-        <FileDropzone
-          accept={ACCEPTED_IMAGE_TYPES}
-          extensions={["png", "jpg", "jpeg", "webp"]}
-          file={file}
-          preview={source}
-          onFileChange={handleFile}
-          strings={dropzone}
-          locale={locale}
-        />
+    <>
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+        {/* On phones the result sits between the upload and the settings. */}
+        <div className="contents lg:block lg:space-y-6">
+          <Card className="order-1 p-5 sm:p-6">
+            <FileDropzone
+              accept={ACCEPTED_IMAGE_TYPES}
+              extensions={["png", "jpg", "jpeg", "webp"]}
+              file={file}
+              preview={source}
+              onFileChange={handleFile}
+              strings={dropzone}
+              locale={locale}
+            />
+          </Card>
 
-        <ControlSection title={common.settings}>
-          <RangeField
-            label={strings.quality}
-            value={quality}
-            min={10}
-            max={100}
-            onChange={setQuality}
-          />
-          <SegmentedControl label={strings.format} value={mode} options={formatOptions} onChange={setMode} />
-          <p className="text-xs leading-relaxed text-muted">
-            {target === "png" ? strings.pngNote : strings.lossyNote}
-          </p>
-        </ControlSection>
-      </Card>
-
-      <Card className="p-5 sm:p-6">
-        {!source ? (
-          <ToolEmptyState>{strings.empty}</ToolEmptyState>
-        ) : (
-          <div className="space-y-5">
-            <dl className="grid grid-cols-3 overflow-hidden rounded-xl border border-border">
-              <Stat label={strings.originalSize} value={formatBytes(originalSize, locale)} />
-              <Stat
-                label={`${strings.compressedSize} (${FORMAT_LABELS[target]})`}
-                value={current ? formatBytes(current.blob.size, locale) : "—"}
-                className="border-l border-border"
+          <Card className="order-3 p-5 sm:p-6">
+            <ControlSection title={common.settings}>
+              <RangeField
+                label={strings.quality}
+                value={quality}
+                min={10}
+                max={100}
+                onChange={setQuality}
               />
-              <Stat
-                label={strings.saved}
-                value={current ? (change <= 0 ? `−${percent}` : `+${percent}`) : "—"}
-                className={cn(
-                  "border-l border-border",
-                  current && change <= 0 && "[&_dd]:text-emerald-700 dark:[&_dd]:text-emerald-400",
-                  current && change > 0 && "[&_dd]:text-amber-700 dark:[&_dd]:text-amber-300",
-                )}
-              />
-            </dl>
-
-            {current && change > 0 && (
-              <p className="flex gap-2 rounded-lg border border-amber-500/30 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-400/10 dark:text-amber-200">
-                <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-                {format(strings.larger, { percent })}
+              <SegmentedControl label={strings.format} value={mode} options={formatOptions} onChange={setMode} />
+              <p className="text-xs leading-relaxed text-muted">
+                {target === "png" ? strings.pngNote : strings.lossyNote}
               </p>
-            )}
+            </ControlSection>
+          </Card>
+        </div>
 
-            <div aria-live="polite" aria-busy={busy}>
-              {current ? (
-                <CompareSlider
-                  beforeUrl={source.url}
-                  afterUrl={current.url}
-                  beforeLabel={common.original}
-                  afterLabel={strings.compressedLabel}
-                  sliderLabel={strings.compareLabel}
-                  width={source.width}
-                  height={source.height}
+        <Card className={cn("order-2 p-5 sm:p-6", !source && "hidden lg:block")}>
+          {!source ? (
+            <ToolEmptyState>{strings.empty}</ToolEmptyState>
+          ) : (
+            <div className="space-y-5">
+              <dl className="grid grid-cols-3 overflow-hidden rounded-xl border border-border">
+                <Stat label={strings.originalSize} value={formatBytes(originalSize, locale)} />
+                <Stat
+                  label={`${strings.compressedSize} (${FORMAT_LABELS[target]})`}
+                  value={current ? formatBytes(current.blob.size, locale) : "—"}
+                  className="border-l border-border"
                 />
-              ) : (
-                <ToolEmptyState>
-                  {busy && <LoaderCircle aria-hidden="true" className="size-5 animate-spin text-primary-text" />}
-                  {busy ? strings.compressing : common.exportError}
-                </ToolEmptyState>
-              )}
-            </div>
+                <Stat
+                  label={strings.saved}
+                  value={current ? (change <= 0 ? `−${percent}` : `+${percent}`) : "—"}
+                  className={cn(
+                    "border-l border-border",
+                    current && change <= 0 && "[&_dd]:text-emerald-700 dark:[&_dd]:text-emerald-400",
+                    current && change > 0 && "[&_dd]:text-amber-700 dark:[&_dd]:text-amber-300",
+                  )}
+                />
+              </dl>
 
-            <div className="flex justify-end">
-              <Button size="lg" onClick={download} disabled={!current} className="w-full sm:w-auto">
-                <Download aria-hidden="true" />
-                {strings.download}
-              </Button>
+              {current && change > 0 && (
+                <p className="flex gap-2 rounded-lg border border-amber-500/30 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-400/10 dark:text-amber-200">
+                  <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+                  {format(strings.larger, { percent })}
+                </p>
+              )}
+
+              <div aria-live="polite" aria-busy={busy}>
+                {current ? (
+                  <CompareSlider
+                    beforeUrl={source.url}
+                    afterUrl={current.url}
+                    beforeLabel={common.original}
+                    afterLabel={strings.compressedLabel}
+                    sliderLabel={strings.compareLabel}
+                    width={source.width}
+                    height={source.height}
+                  />
+                ) : (
+                  <ToolEmptyState>
+                    {busy && <LoaderCircle aria-hidden="true" className="size-5 animate-spin text-primary-text" />}
+                    {busy ? strings.compressing : common.exportError}
+                  </ToolEmptyState>
+                )}
+              </div>
+
+              {/* On phones the same action lives in the bar at the bottom of the screen. */}
+              <div className="hidden justify-end lg:flex">
+                <Button size="lg" onClick={download} disabled={!current}>
+                  <Download aria-hidden="true" />
+                  {strings.download}
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
-      </Card>
-    </div>
+          )}
+        </Card>
+      </div>
+
+      {source && (
+        <MobileActionBar
+          summary={
+            current ? (
+              <span className="font-mono tabular-nums">
+                {formatBytes(originalSize, locale)} →{" "}
+                <span className="font-semibold text-foreground">{formatBytes(current.blob.size, locale)}</span>
+              </span>
+            ) : busy ? (
+              strings.compressing
+            ) : (
+              common.exportError
+            )
+          }
+        >
+          <Button size="lg" onClick={download} disabled={!current}>
+            <Download aria-hidden="true" />
+            {common.download}
+          </Button>
+        </MobileActionBar>
+      )}
+    </>
   );
 }
 

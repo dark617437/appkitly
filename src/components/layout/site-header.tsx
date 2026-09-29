@@ -2,6 +2,7 @@ import Link from "next/link";
 import { localizePath, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { blogPath } from "@/lib/blog";
+import { ourAppsPath } from "@/lib/our-apps";
 import { categoryPath } from "@/lib/tools";
 import { Container } from "@/components/ui/container";
 import { DesktopNav, MobileNav, type NavItem } from "./header-nav";
@@ -16,6 +17,7 @@ export function SiteHeader({ locale, dict }: { locale: Locale; dict: Dictionary 
     { href: localizePath(categoryPath("images"), locale), label: dict.nav.images },
     { href: localizePath(categoryPath("design"), locale), label: dict.nav.design },
     { href: localizePath(blogPath(), locale), label: dict.nav.blog },
+    { href: localizePath(ourAppsPath, locale), label: dict.nav.apps },
   ];
 
   return (

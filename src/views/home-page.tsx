@@ -13,6 +13,7 @@ import { ToolIcon } from "@/components/tools/tool-icon";
 import { JsonLd } from "@/components/seo/json-ld";
 import { websiteJsonLd } from "@/lib/structured-data";
 import { LatestGuides } from "./blog-pages";
+import { OurAppsSection } from "./our-apps";
 
 const principleIcons = [Gift, ShieldCheck, Store];
 
@@ -184,6 +185,8 @@ export function HomePage({ locale }: { locale: Locale }) {
           </ul>
         </Container>
       </section>
+
+      <OurAppsSection locale={locale} className="border-t border-border" />
 
       {/* Guides */}
       <section aria-labelledby="latest-guides" className="border-t border-border bg-surface py-16 sm:py-24">

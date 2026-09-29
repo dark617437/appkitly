@@ -7,6 +7,7 @@ import { copyText, downloadText } from "@/lib/download";
 import { toast } from "@/lib/toast";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { MobileActionBar } from "@/components/ui/mobile-action-bar";
 import {
   CheckboxChip,
   ControlSection,
@@ -108,7 +109,12 @@ export function PrivacyPolicyGenerator({ locale, strings, common }: PrivacyPolic
     else toast.error(common.copyFailed);
   }
 
+  function downloadHtml() {
+    downloadText(policyToHtmlDocument(policy, input.language), `${fileBase}-privacy-policy.html`, "text/html");
+  }
+
   return (
+    <>
     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
       <Card className="space-y-8 p-5 sm:p-6">
         <ControlSection title={strings.detailsTitle}>
@@ -226,13 +232,7 @@ export function PrivacyPolicyGenerator({ locale, strings, common }: PrivacyPolic
               <Copy aria-hidden="true" />
               {strings.copy}
             </Button>
-            <Button
-              variant="secondary"
-              disabled={!ready}
-              onClick={() =>
-                downloadText(policyToHtmlDocument(policy, input.language), `${fileBase}-privacy-policy.html`, "text/html")
-              }
-            >
+            <Button variant="secondary" disabled={!ready} onClick={downloadHtml}>
               <FileCode aria-hidden="true" />
               {strings.downloadHtml}
             </Button>
@@ -262,7 +262,8 @@ export function PrivacyPolicyGenerator({ locale, strings, common }: PrivacyPolic
             aria-label={strings.previewLabel}
             // Scrollable, so keyboard users need to be able to focus it.
             tabIndex={0}
-            className="prose-content max-h-[70vh] overflow-y-auto pr-1 lg:max-h-[calc(100vh-18rem)]"
+            // Scrolls inside its own box only on large screens; nested scrolling is awkward on phones.
+            className="prose-content lg:max-h-[calc(100vh-18rem)] lg:overflow-y-auto lg:pr-1"
           >
             <h2 className="!mt-0 text-2xl">{policy.title}</h2>
             <p>
@@ -292,6 +293,28 @@ export function PrivacyPolicyGenerator({ locale, strings, common }: PrivacyPolic
         </Card>
       </div>
     </div>
+
+    {ready && (
+      <MobileActionBar>
+        <div className="flex gap-2">
+          <Button size="lg" className="flex-1" onClick={copyPolicy}>
+            <Copy aria-hidden="true" />
+            {strings.copy}
+          </Button>
+          <Button
+            size="lg"
+            variant="secondary"
+            onClick={downloadHtml}
+            aria-label={strings.downloadHtml}
+            title={strings.downloadHtml}
+          >
+            <FileCode aria-hidden="true" />
+            HTML
+          </Button>
+        </div>
+      </MobileActionBar>
+    )}
+    </>
   );
 }
 

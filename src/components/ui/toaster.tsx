@@ -24,7 +24,8 @@ export function Toaster({ closeLabel }: { closeLabel: string }) {
     <div
       aria-live="polite"
       aria-atomic="false"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-center gap-2 p-4 sm:items-end sm:p-6"
+      // Top on phones and tablets so toasts never cover the bottom action bar.
+      className="pointer-events-none fixed inset-x-0 top-16 z-50 flex flex-col items-center gap-2 p-4 lg:top-auto lg:bottom-0 lg:items-end lg:p-6"
     >
       {toasts.map((item) => {
         const Icon = icons[item.variant];

@@ -26,6 +26,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { FileDropzone } from "@/components/ui/file-dropzone";
 import { ColorField, ControlSection, RangeField, SegmentedControl } from "@/components/ui/form-controls";
+import { MobileActionBar } from "@/components/ui/mobile-action-bar";
+import { cn } from "@/lib/cn";
 import { ToolEmptyState } from "../tool-empty-state";
 
 interface ConvertedImage {
@@ -136,94 +138,134 @@ export function ImageConverter({ locale, strings, common, dropzone }: ImageConve
     downloadBlob(current.blob, `${baseName(file.name)}.${current.format}`);
   }
 
+  // On phones, bring the converted image into view once it is ready.
+  const resultCardRef = useRef<HTMLDivElement>(null);
+  const currentUrl = current?.url;
+  useEffect(() => {
+    if (!currentUrl || !window.matchMedia("(max-width: 1023px)").matches) return;
+    resultCardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [currentUrl]);
+
+  const convertButtonContent = (
+    <>
+      {converting ? <LoaderCircle aria-hidden="true" className="animate-spin" /> : <RefreshCw aria-hidden="true" />}
+      {converting ? strings.converting : strings.convert}
+    </>
+  );
+
   return (
-    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
-      <Card className="space-y-8 p-5 sm:p-6">
-        <FileDropzone
-          accept={ACCEPTED_IMAGE_TYPES}
-          extensions={["png", "jpg", "jpeg", "webp"]}
-          file={file}
-          preview={source}
-          onFileChange={handleFile}
-          strings={dropzone}
-          locale={locale}
-        />
-
-        <ControlSection title={common.settings}>
-          {inputFormat && (
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted">{strings.from}:</span>
-              <Badge variant="primary">{FORMAT_LABELS[inputFormat]}</Badge>
-              <ArrowRight aria-hidden="true" className="size-4 text-muted" />
-              <Badge variant="primary">{FORMAT_LABELS[effectiveTarget]}</Badge>
-            </div>
-          )}
-          <SegmentedControl
-            label={strings.to}
-            value={effectiveTarget}
-            options={targets.map((option) => ({ value: option, label: FORMAT_LABELS[option] }))}
-            onChange={setTarget}
-          />
-          {lossy && (
-            <RangeField
-              label={strings.quality}
-              value={quality}
-              min={10}
-              max={100}
-              onChange={setQuality}
+    <>
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+        {/* On phones the result sits between the upload and the settings. */}
+        <div className="contents lg:block lg:space-y-6">
+          <Card className="order-1 p-5 sm:p-6">
+            <FileDropzone
+              accept={ACCEPTED_IMAGE_TYPES}
+              extensions={["png", "jpg", "jpeg", "webp"]}
+              file={file}
+              preview={source}
+              onFileChange={handleFile}
+              strings={dropzone}
+              locale={locale}
             />
-          )}
-          {effectiveTarget === "jpg" && (
-            <div className="space-y-1.5">
-              <ColorField label={strings.background} value={background} onChange={setBackground} />
-              <p className="text-xs leading-relaxed text-muted">{strings.backgroundHint}</p>
-            </div>
-          )}
-        </ControlSection>
+          </Card>
 
-        <Button size="lg" className="w-full" onClick={runConversion} disabled={!source || converting}>
-          {converting ? (
-            <LoaderCircle aria-hidden="true" className="animate-spin" />
-          ) : (
-            <RefreshCw aria-hidden="true" />
-          )}
-          {converting ? strings.converting : strings.convert}
-        </Button>
-      </Card>
+          <Card className="order-3 space-y-8 p-5 sm:p-6">
+            <ControlSection title={common.settings}>
+              {inputFormat && (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted">{strings.from}:</span>
+                  <Badge variant="primary">{FORMAT_LABELS[inputFormat]}</Badge>
+                  <ArrowRight aria-hidden="true" className="size-4 text-muted" />
+                  <Badge variant="primary">{FORMAT_LABELS[effectiveTarget]}</Badge>
+                </div>
+              )}
+              <SegmentedControl
+                label={strings.to}
+                value={effectiveTarget}
+                options={targets.map((option) => ({ value: option, label: FORMAT_LABELS[option] }))}
+                onChange={setTarget}
+              />
+              {lossy && (
+                <RangeField
+                  label={strings.quality}
+                  value={quality}
+                  min={10}
+                  max={100}
+                  onChange={setQuality}
+                />
+              )}
+              {effectiveTarget === "jpg" && (
+                <div className="space-y-1.5">
+                  <ColorField label={strings.background} value={background} onChange={setBackground} />
+                  <p className="text-xs leading-relaxed text-muted">{strings.backgroundHint}</p>
+                </div>
+              )}
+            </ControlSection>
 
-      <Card className="p-5 sm:p-6">
-        <h2 className="text-base font-semibold tracking-tight text-foreground">{strings.result}</h2>
-        <div className="mt-5" aria-live="polite">
-          {!source ? (
-            <ToolEmptyState>{strings.empty}</ToolEmptyState>
-          ) : !current ? (
-            <ToolEmptyState>{strings.pending}</ToolEmptyState>
-          ) : (
-            <div className="space-y-5">
-              <div
-                className="bg-checkerboard mx-auto overflow-hidden rounded-xl border border-border"
-                style={{
-                  aspectRatio: `${source.width} / ${source.height}`,
-                  width: `min(100%, calc(60vh * ${source.width / source.height}))`,
-                }}
-              >
-                <img src={current.url} alt={strings.result} className="size-full object-contain" />
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-muted">
-                  <span className="font-medium text-foreground">{FORMAT_LABELS[current.format]}</span>
-                  {" · "}
-                  {source.width} × {source.height} px · {formatBytes(current.blob.size, locale)}
-                </p>
-                <Button size="lg" onClick={download} className="w-full sm:w-auto">
-                  <Download aria-hidden="true" />
-                  {format(strings.download, { format: FORMAT_LABELS[current.format] })}
-                </Button>
-              </div>
+            {/* On phones this action lives in the bar at the bottom of the screen. */}
+            <div className="hidden lg:block">
+              <Button size="lg" className="w-full" onClick={runConversion} disabled={!source || converting}>
+                {convertButtonContent}
+              </Button>
             </div>
-          )}
+          </Card>
         </div>
-      </Card>
-    </div>
+
+        <Card
+          ref={resultCardRef}
+          className={cn("order-2 scroll-mt-20 p-5 sm:p-6", !current && "hidden lg:block")}
+        >
+          <h2 className="text-base font-semibold tracking-tight text-foreground">{strings.result}</h2>
+          <div className="mt-5" aria-live="polite">
+            {!source ? (
+              <ToolEmptyState>{strings.empty}</ToolEmptyState>
+            ) : !current ? (
+              <ToolEmptyState>{strings.pending}</ToolEmptyState>
+            ) : (
+              <div className="space-y-5">
+                <div
+                  className="bg-checkerboard mx-auto overflow-hidden rounded-xl border border-border"
+                  style={{
+                    aspectRatio: `${source.width} / ${source.height}`,
+                    width: `min(100%, calc(60vh * ${source.width / source.height}))`,
+                  }}
+                >
+                  <img src={current.url} alt={strings.result} className="size-full object-contain" />
+                </div>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm text-muted">
+                    <span className="font-medium text-foreground">{FORMAT_LABELS[current.format]}</span>
+                    {" · "}
+                    {source.width} × {source.height} px · {formatBytes(current.blob.size, locale)}
+                  </p>
+                  <div className="hidden lg:block">
+                    <Button size="lg" onClick={download}>
+                      <Download aria-hidden="true" />
+                      {format(strings.download, { format: FORMAT_LABELS[current.format] })}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+      </div>
+
+      {source && (
+        <MobileActionBar>
+          {current ? (
+            <Button size="lg" onClick={download}>
+              <Download aria-hidden="true" />
+              {format(strings.download, { format: FORMAT_LABELS[current.format] })}
+            </Button>
+          ) : (
+            <Button size="lg" onClick={runConversion} disabled={converting}>
+              {convertButtonContent}
+            </Button>
+          )}
+        </MobileActionBar>
+      )}
+    </>
   );
 }

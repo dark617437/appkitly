@@ -50,6 +50,7 @@ export const tr: Dictionary = {
     images: "Görsel Araçları",
     design: "Tasarım",
     blog: "Blog",
+    apps: "Uygulamalarımız",
     openMenu: "Menüyü aç",
     closeMenu: "Menüyü kapat",
     switchTheme: "Açık ve koyu tema arasında geçiş yap",
@@ -171,6 +172,86 @@ export const tr: Dictionary = {
       description: "Doğrusal ve dairesel gradyanlar oluştur, CSS kodunu kopyala.",
     },
   },
+  ourApps: {
+    metaTitle: "Android Uygulamalarımız",
+    metaDescription:
+      "AppKitly'nin arkasındaki ekip Incipient Apps'in Android uygulamaları: ezan vakti, kıble pusulası, durum indirici, kelime oyunu ve futbol bilgi yarışması.",
+    title: "Uygulamalarımız",
+    intro: "AppKitly, Incipient Apps tarafından geliştirildi. Google Play'de yayınladığımız Android uygulamalarımız aşağıda.",
+    viewOnPlay: "Google Play'de görüntüle",
+    viewOnPlayLabel: "{name} Google Play'de (yeni sekmede açılır)",
+    developerPage: "Google Play'deki tüm uygulamalarımız",
+    homeTitle: "AppKitly'nin arkasındaki ekipten",
+    homeSubtitle: "Android uygulamaları da geliştiriyoruz. Google Play'de yayınladıklarımıza göz at.",
+    allApps: "Uygulamalarımızı gör",
+    list: {
+      "ezan-vakti": {
+        name: "Ezan Vakti: Namaz Kuran",
+        category: "Yaşam tarzı",
+        description:
+          "Namaz vakitleri ve ezan alarmı, Kur'an-ı Kerim, kıble bulucu, zikir, dini günler ve Ramazan imsakiyesi tek, sade bir uygulamada.",
+      },
+      "durum-indirici": {
+        name: "Durum İndirici: Status Saver",
+        category: "Araçlar",
+        description: "Sevdiklerinin paylaştığı durumları kaydet ve yerleşik tasarım stüdyosuyla dikkat çekici paylaşımlar hazırla.",
+      },
+      "kelime-koprusu": {
+        name: "Kelime Köprüsü: Kelime Oyunu",
+        category: "Kelime oyunu",
+        description: "Verilen harflerden kelimeler üret, köprüleri tamamla ve uzay temalı renkli seviyelerde ilerle.",
+      },
+      "kabe-yonu": {
+        name: "Kabe Yönü: Kıble Pusulası",
+        category: "Yaşam tarzı",
+        description:
+          "Hassas pusula, harita ve kamera destekli AR modu ile kıbleyi her yerde bul. Dijital zikirmatik de içinde.",
+      },
+      "football-striker": {
+        name: "Football Striker: Quiz Game",
+        category: "Bilgi yarışması",
+        description:
+          "Gerçek taraftarlar için futbol bilgi yarışması: Dünya Kupaları, transferler, Şampiyonlar Ligi efsaneleri ve daha fazlası.",
+      },
+    },
+  },
+  privacyPage: {
+    metaTitle: "Gizlilik",
+    metaDescription:
+      "AppKitly verilerini nasıl ele alır: araçlar tarayıcında çalışır, dosyaların cihazından çıkmaz ve ziyaretler çerez olmadan anonim olarak sayılır.",
+    title: "Gizlilik",
+    intro: "AppKitly, tarayıcında çalışan ücretsiz araçlardan oluşur. Siteyi mümkün olan en az veriyi toplayacak şekilde tasarladık.",
+    updated: "Son güncelleme: {date}",
+    sections: [
+      {
+        heading: "Dosyaların cihazında kalır",
+        body: "Tüm araçlar tarayıcında çalışır. Araçlarda kullandığın görseller, ikonlar, ekran görüntüleri ve metinler cihazında işlenir; bizim veya başka birinin sunucusuna hiçbir zaman yüklenmez.",
+      },
+      {
+        heading: "Anonim ziyaret istatistikleri",
+        body: "Sayfa görüntülemelerini saymak ve hangi sayfaların işe yaradığını görmek için Vercel Web Analytics kullanırız. Ziyaret edilen sayfa, yönlendiren site, ülke ve cihaz türü gibi anonim bilgiler kaydedilir. Çerez kullanılmaz ve kimliğin belirlenmez.",
+      },
+      {
+        heading: "Tarayıcında saklanan ayarlar",
+        body: "Açık ve koyu tema arasında geçiş yaptığında, sitenin tercihini hatırlaması için seçimin tarayıcının yerel depolamasına kaydedilir. Bu bilgi cihazından çıkmaz.",
+      },
+      {
+        heading: "Barındırma",
+        body: "Site Vercel tarafından barındırılır. Her web barındırma hizmeti gibi Vercel de sayfaları sunmak ve hizmeti güvende tutmak için IP adresi gibi teknik verileri işler.",
+      },
+      {
+        heading: "Diğer sitelere bağlantılar",
+        body: "Google Play'e ve diğer sitelere verilen bağlantılar, o sitelerin kendi gizlilik politikalarına tabidir.",
+      },
+      {
+        heading: "Değişiklikler",
+        body: "AppKitly'nin verileri ele alış biçimini değiştirirsek bu sayfayı ve yukarıdaki tarihi güncelleriz.",
+      },
+    ],
+    contactHeading: "İletişim",
+    contactBody: "Bize şu sayfadaki iletişim bilgilerinden ulaşabilirsin:",
+    contactLink: "Google Play geliştirici sayfamız",
+  },
   footer: {
     tagline: "Mobil uygulama geliştiricileri için ücretsiz online araçlar.",
     categories: "Kategoriler",
@@ -178,6 +259,8 @@ export const tr: Dictionary = {
     home: "Ana sayfa",
     allTools: "Tüm araçlar",
     blog: "Blog",
+    apps: "Uygulamalarımız",
+    privacy: "Gizlilik",
     language: "Dil",
     rights: "Tüm hakları saklıdır.",
   },

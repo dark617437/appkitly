@@ -17,6 +17,21 @@ interface Drag {
   group: string;
 }
 
+/** Two-finger gesture: spreading scales, twisting rotates and moving pans the layer. */
+interface Pinch {
+  layer: Layer;
+  box: Box;
+  distance: number;
+  angle: number;
+  mid: Point;
+  group: string;
+}
+
+function snapRotation(rotation: number): number {
+  const nearest = Math.round(rotation / 15) * 15;
+  return Math.abs(rotation - nearest) < 3 ? nearest : rotation;
+}
+
 // Sizes in CSS pixels, converted to scene pixels at the current zoom.
 const HANDLE = 12;
 const ROTATE_OFFSET = 32;
@@ -69,6 +84,9 @@ export function EditorCanvas({
 }: EditorCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dragRef = useRef<Drag | null>(null);
+  const pinchRef = useRef<Pinch | null>(null);
+  // Positions of the pointers currently touching the canvas, by pointer id.
+  const pointersRef = useRef(new Map<number, Point>());
   const guidesRef = useRef({ x: false, y: false });
   const gestureRef = useRef(0);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -184,10 +202,46 @@ export function EditorCanvas({
     return null;
   }
 
+  function capture(event: PointerEvent<HTMLCanvasElement>) {
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // The pointer may already be gone (e.g. a cancelled touch); dragging still works without capture.
+    }
+  }
+
+  function startPinch(layer: Layer) {
+    const [a, b] = [...pointersRef.current.values()];
+    gestureRef.current += 1;
+    pinchRef.current = {
+      layer,
+      box: layerBox(layer, scene, assets),
+      distance: Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)),
+      angle: Math.atan2(b.y - a.y, b.x - a.x),
+      mid: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 },
+      group: `gesture:${gestureRef.current}`,
+    };
+    // The pinch takes over from any one-finger drag.
+    dragRef.current = null;
+    guidesRef.current = { x: false, y: false };
+  }
+
   function onPointerDown(event: PointerEvent<HTMLCanvasElement>) {
     if (event.button !== 0) return;
     const { point, unit } = toPoint(event);
     const touch = event.pointerType === "touch";
+    pointersRef.current.set(event.pointerId, point);
+
+    if (pointersRef.current.size >= 2) {
+      const id = dragRef.current?.layer.id ?? selectedId;
+      const layer = scene.layers.find((item) => item.id === id && item.visible);
+      if (layer && pointersRef.current.size === 2) {
+        event.preventDefault();
+        capture(event);
+        startPinch(layer);
+      }
+      return;
+    }
 
     let mode: DragMode = "move";
     let target: Layer | undefined;
@@ -208,11 +262,7 @@ export function EditorCanvas({
     if (!target) return;
 
     event.preventDefault();
-    try {
-      event.currentTarget.setPointerCapture(event.pointerId);
-    } catch {
-      // The pointer may already be gone (e.g. a cancelled touch); dragging still works without capture.
-    }
+    capture(event);
     gestureRef.current += 1;
     dragRef.current = {
       mode,
@@ -225,6 +275,31 @@ export function EditorCanvas({
 
   function onPointerMove(event: PointerEvent<HTMLCanvasElement>) {
     const { point, unit } = toPoint(event);
+    if (pointersRef.current.has(event.pointerId)) pointersRef.current.set(event.pointerId, point);
+
+    const pinch = pinchRef.current;
+    if (pinch && pointersRef.current.size >= 2) {
+      const [a, b] = [...pointersRef.current.values()];
+      const ratio = Math.max(0.05, Math.hypot(b.x - a.x, b.y - a.y) / pinch.distance);
+      const turn = ((Math.atan2(b.y - a.y, b.x - a.x) - pinch.angle) * 180) / Math.PI;
+      const { layer, box } = pinch;
+      const size: LayerPatch =
+        layer.kind === "image"
+          ? { width: clamp(layer.width * ratio, 0.03, 2) }
+          : { fontSize: clamp(layer.fontSize * ratio, 0.01, 0.3), maxWidth: clamp(layer.maxWidth * ratio, 0.1, 1.5) };
+      onLayerChange(
+        layer.id,
+        {
+          ...size,
+          x: (box.cx + (a.x + b.x) / 2 - pinch.mid.x) / scene.width,
+          y: (box.cy + (a.y + b.y) / 2 - pinch.mid.y) / scene.height,
+          rotation: Math.round(normalizeAngle(snapRotation(layer.rotation + turn))),
+        },
+        pinch.group,
+      );
+      return;
+    }
+
     const drag = dragRef.current;
     const canvas = event.currentTarget;
 
@@ -272,12 +347,18 @@ export function EditorCanvas({
   }
 
   function endDrag(event: PointerEvent<HTMLCanvasElement>) {
-    if (!dragRef.current) return;
-    dragRef.current = null;
-    guidesRef.current = { x: false, y: false };
+    pointersRef.current.delete(event.pointerId);
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
+    if (pinchRef.current) {
+      // Lifting one finger ends the pinch; the other finger doesn't resume a drag, to avoid jumps.
+      if (pointersRef.current.size < 2) pinchRef.current = null;
+      return;
+    }
+    if (!dragRef.current) return;
+    dragRef.current = null;
+    guidesRef.current = { x: false, y: false };
     setVersion((value) => value + 1);
   }
 

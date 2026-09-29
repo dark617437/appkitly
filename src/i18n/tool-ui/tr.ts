@@ -3,6 +3,7 @@ import type { ToolUiStrings } from "./en";
 export const trToolUi: ToolUiStrings = {
   dropzone: {
     title: "Görseli buraya sürükleyip bırak",
+    tapTitle: "Görsel seçmek için dokun",
     browse: "veya seçmek için tıkla",
     hint: "PNG, JPG veya WebP · en fazla {max}",
     replace: "Görseli değiştir",
@@ -14,6 +15,7 @@ export const trToolUi: ToolUiStrings = {
   common: {
     privacy: "Dosyaların cihazından hiç çıkmaz.",
     readError: "Bu görsel okunamadı. Dosya bozuk veya desteklenmeyen bir formatta olabilir.",
+    download: "İndir",
     downloadStarted: "İndirme başladı.",
     copied: "Panoya kopyalandı.",
     copyFailed: "Otomatik kopyalanamadı. Lütfen metni seçip kopyala.",

@@ -28,6 +28,7 @@ import {
   SegmentedControl,
   SwitchField,
 } from "@/components/ui/form-controls";
+import { MobileActionBar } from "@/components/ui/mobile-action-bar";
 import { cn } from "@/lib/cn";
 import { ToolEmptyState } from "../tool-empty-state";
 
@@ -201,148 +202,168 @@ export function AppIconResizer({ locale, strings, common, dropzone }: AppIconRes
 
   const showAppStoreWarning = mode === "transparent" && selected.includes(1024);
 
-  return (
-    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
-      <Card className="space-y-8 p-5 sm:p-6">
-        <FileDropzone
-          accept={ACCEPTED_IMAGE_TYPES}
-          extensions={["png", "jpg", "jpeg", "webp"]}
-          file={file}
-          preview={source}
-          onFileChange={handleFile}
-          strings={dropzone}
-          locale={locale}
-        />
+  const downloadLabel =
+    visible.length > 1 ? format(strings.downloadZip, { count: visible.length }) : strings.downloadPng;
+  const downloadIconElement = zipping ? (
+    <LoaderCircle aria-hidden="true" className="animate-spin" />
+  ) : visible.length > 1 ? (
+    <FileArchive aria-hidden="true" />
+  ) : (
+    <Download aria-hidden="true" />
+  );
 
-        <ControlSection
-          title={strings.sizesTitle}
-          action={
-            <div className="flex gap-1">
-              <Button variant="ghost" size="sm" onClick={() => setSelected(SIZES)}>
-                {strings.selectAll}
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setSelected([])}>
-                {strings.clear}
+  return (
+    <>
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+        {/* On phones the preview sits between the upload and the settings. */}
+        <div className="contents lg:block lg:space-y-6">
+          <Card className="order-1 p-5 sm:p-6">
+            <FileDropzone
+              accept={ACCEPTED_IMAGE_TYPES}
+              extensions={["png", "jpg", "jpeg", "webp"]}
+              file={file}
+              preview={source}
+              onFileChange={handleFile}
+              strings={dropzone}
+              locale={locale}
+            />
+          </Card>
+
+          <Card className="order-3 space-y-8 p-5 sm:p-6">
+            <ControlSection
+              title={strings.sizesTitle}
+              action={
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="sm" onClick={() => setSelected(SIZES)}>
+                    {strings.selectAll}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={() => setSelected([])}>
+                    {strings.clear}
+                  </Button>
+                </div>
+              }
+            >
+              <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-2">
+                {SIZES.map((size) => (
+                  <CheckboxChip
+                    key={size}
+                    label={<span className="font-mono">{`${size} × ${size}`}</span>}
+                    description={strings.sizeLabels[String(size)]}
+                    checked={selected.includes(size)}
+                    onChange={(checked) => toggleSize(size, checked)}
+                  />
+                ))}
+              </div>
+            </ControlSection>
+
+            <ControlSection title={strings.backgroundTitle}>
+              <SegmentedControl
+                label={strings.backgroundTitle}
+                hideLabel
+                value={mode}
+                options={backgroundOptions}
+                onChange={setMode}
+              />
+              {mode === "custom" && (
+                <ColorField label={strings.customColor} value={customColor} onChange={setCustomColor} />
+              )}
+            </ControlSection>
+
+            <SwitchField
+              label={strings.keepAspect}
+              description={strings.keepAspectHint}
+              checked={keepAspect}
+              onChange={setKeepAspect}
+            />
+          </Card>
+        </div>
+
+        <Card className={cn("order-2 p-5 sm:p-6", !source && "hidden lg:block")}>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-base font-semibold tracking-tight text-foreground">{common.preview}</h2>
+            {/* On phones the same action lives in the bar at the bottom of the screen. */}
+            <div className="hidden lg:block">
+              <Button onClick={downloadAll} disabled={visible.length === 0 || zipping}>
+                {downloadIconElement}
+                {downloadLabel}
               </Button>
             </div>
-          }
-        >
-          <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-2">
-            {SIZES.map((size) => (
-              <CheckboxChip
-                key={size}
-                label={<span className="font-mono">{`${size} × ${size}`}</span>}
-                description={strings.sizeLabels[String(size)]}
-                checked={selected.includes(size)}
-                onChange={(checked) => toggleSize(size, checked)}
-              />
-            ))}
           </div>
-        </ControlSection>
 
-        <ControlSection title={strings.backgroundTitle}>
-          <SegmentedControl
-            label={strings.backgroundTitle}
-            hideLabel
-            value={mode}
-            options={backgroundOptions}
-            onChange={setMode}
-          />
-          {mode === "custom" && (
-            <ColorField label={strings.customColor} value={customColor} onChange={setCustomColor} />
+          {showAppStoreWarning && (
+            <p className="mt-4 flex gap-2 rounded-lg border border-amber-500/30 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-400/10 dark:text-amber-200">
+              <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+              {strings.appStoreWarning}
+            </p>
           )}
-        </ControlSection>
 
-        <SwitchField
-          label={strings.keepAspect}
-          description={strings.keepAspectHint}
-          checked={keepAspect}
-          onChange={setKeepAspect}
-        />
-      </Card>
-
-      <Card className="p-5 sm:p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-base font-semibold tracking-tight text-foreground">{common.preview}</h2>
-          <Button onClick={downloadAll} disabled={visible.length === 0 || zipping}>
-            {zipping ? (
-              <LoaderCircle aria-hidden="true" className="animate-spin" />
-            ) : visible.length > 1 ? (
-              <FileArchive aria-hidden="true" />
+          <div aria-live="polite" aria-busy={pending}>
+            {!source ? (
+              <ToolEmptyState className="mt-6">{strings.empty}</ToolEmptyState>
+            ) : sizes.length === 0 ? (
+              <ToolEmptyState className="mt-6">{strings.noSizes}</ToolEmptyState>
+            ) : pending ? (
+              <ToolEmptyState className="mt-6">
+                <LoaderCircle aria-hidden="true" className="size-5 animate-spin text-primary-text" />
+                {strings.generating}
+              </ToolEmptyState>
             ) : (
-              <Download aria-hidden="true" />
-            )}
-            {visible.length > 1
-              ? format(strings.downloadZip, { count: visible.length })
-              : strings.downloadPng}
-          </Button>
-        </div>
-
-        {showAppStoreWarning && (
-          <p className="mt-4 flex gap-2 rounded-lg border border-amber-500/30 bg-amber-50 p-3 text-sm text-amber-900 dark:bg-amber-400/10 dark:text-amber-200">
-            <TriangleAlert aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            {strings.appStoreWarning}
-          </p>
-        )}
-
-        <div aria-live="polite" aria-busy={pending}>
-          {!source ? (
-            <ToolEmptyState className="mt-6">{strings.empty}</ToolEmptyState>
-          ) : sizes.length === 0 ? (
-            <ToolEmptyState className="mt-6">{strings.noSizes}</ToolEmptyState>
-          ) : pending ? (
-            <ToolEmptyState className="mt-6">
-              <LoaderCircle aria-hidden="true" className="size-5 animate-spin text-primary-text" />
-              {strings.generating}
-            </ToolEmptyState>
-          ) : (
-            <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
-              {visible.map((icon) => {
-                const display = Math.min(icon.size, 112);
-                return (
-                  <li key={icon.size} className="flex flex-col rounded-xl border border-border bg-surface p-3">
-                    <div
-                      className={cn(
-                        "flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-border",
-                        fill ? "bg-card" : "bg-checkerboard",
-                      )}
-                    >
-                      <img
-                        src={icon.url}
-                        alt={`${icon.size} × ${icon.size}`}
-                        width={display}
-                        height={display}
-                        className="max-w-full"
-                      />
-                    </div>
-                    <div className="mt-3 flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="font-mono text-sm font-semibold text-foreground">
-                          {icon.size} × {icon.size}
-                        </p>
-                        <p className="truncate text-xs text-muted">
-                          {strings.sizeLabels[String(icon.size)]} · {formatBytes(icon.blob.size, locale)}
-                        </p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="-mr-1 size-8"
-                        onClick={() => downloadIcon(icon)}
-                        aria-label={format(strings.downloadSize, { size: icon.size })}
-                        title={format(strings.downloadSize, { size: icon.size })}
+              <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                {visible.map((icon) => {
+                  const display = Math.min(icon.size, 112);
+                  return (
+                    <li key={icon.size} className="flex flex-col rounded-xl border border-border bg-surface p-3">
+                      <div
+                        className={cn(
+                          "flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-border",
+                          fill ? "bg-card" : "bg-checkerboard",
+                        )}
                       >
-                        <Download aria-hidden="true" />
-                      </Button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-      </Card>
-    </div>
+                        <img
+                          src={icon.url}
+                          alt={`${icon.size} × ${icon.size}`}
+                          width={display}
+                          height={display}
+                          className="max-w-full"
+                        />
+                      </div>
+                      <div className="mt-3 flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="font-mono text-sm font-semibold text-foreground">
+                            {icon.size} × {icon.size}
+                          </p>
+                          <p className="truncate text-xs text-muted">
+                            {strings.sizeLabels[String(icon.size)]} · {formatBytes(icon.blob.size, locale)}
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="-mt-1 -mr-1"
+                          onClick={() => downloadIcon(icon)}
+                          aria-label={format(strings.downloadSize, { size: icon.size })}
+                          title={format(strings.downloadSize, { size: icon.size })}
+                        >
+                          <Download aria-hidden="true" />
+                        </Button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </Card>
+      </div>
+
+      {source && (
+        <MobileActionBar>
+          <Button size="lg" onClick={downloadAll} disabled={visible.length === 0 || zipping}>
+            {downloadIconElement}
+            {downloadLabel}
+          </Button>
+        </MobileActionBar>
+      )}
+    </>
   );
 }
-

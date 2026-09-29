@@ -67,7 +67,8 @@ export function CompareSlider({
         value={split}
         onChange={(event) => setSplit(Number(event.target.value))}
         aria-label={sliderLabel}
-        className="absolute inset-0 size-full cursor-ew-resize opacity-0"
+        // Vertical swipes still scroll the page on touch screens.
+        className="absolute inset-0 size-full cursor-ew-resize touch-pan-y opacity-0"
       />
     </div>
   );

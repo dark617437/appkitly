@@ -113,6 +113,23 @@ export function SceneEditor({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
   const [templateId, setTemplateId] = useState(templates[0]?.id ?? "");
+  const stickyRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * On phones the controls are below the pinned preview, so tapping an element in the
+   * preview scrolls its settings panel into view right under it.
+   */
+  function selectFromCanvas(id: string | null) {
+    setSelectedId(id);
+    if (!id || id === selectedId || !window.matchMedia("(max-width: 1023px)").matches) return;
+    const panel = document.getElementById(`panel-${id}`);
+    const sticky = stickyRef.current;
+    if (!(panel instanceof HTMLDetailsElement) || !sticky) return;
+    panel.open = true;
+    const headerHeight = 64;
+    const top = panel.getBoundingClientRect().top + window.scrollY - (headerHeight + sticky.offsetHeight + 12);
+    window.scrollTo({ top, behavior: "smooth" });
+  }
 
   // Release image memory when leaving the page.
   const assetsRef = useRef(assets);
@@ -216,7 +233,9 @@ export function SceneEditor({
   return (
     <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)]">
       {/* Preview first on small screens, stays in view while scrolling the controls. */}
-      <div className="sticky top-16 z-20 -mx-4 space-y-3 border-b border-border bg-background/95 px-4 pt-3 pb-3 backdrop-blur [--preview-max-h:32vh] sm:-mx-6 sm:px-6 lg:order-2 lg:top-24 lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none lg:[--preview-max-h:calc(100vh-13rem)]">
+      <div
+        ref={stickyRef}
+        className="sticky top-16 z-20 -mx-4 space-y-3 border-b border-border bg-background/95 px-4 pt-3 pb-3 backdrop-blur [--preview-max-h:32vh] sm:-mx-6 sm:px-6 lg:order-2 lg:top-24 lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none lg:[--preview-max-h:calc(100vh-13rem)]">
         <div className="flex items-center justify-between gap-2">
           <div className="flex gap-1">
             <Button
@@ -260,7 +279,7 @@ export function SceneEditor({
           scene={scene}
           assets={assets}
           selectedId={selectedId}
-          onSelect={setSelectedId}
+          onSelect={selectFromCanvas}
           onLayerChange={updateLayer}
           placeholderLabels={placeholderLabels}
           label={strings.previewLabel}
@@ -324,6 +343,7 @@ export function SceneEditor({
           return (
             <EditorPanel
               key={section.layerId}
+              id={`panel-${section.layerId}`}
               title={section.title}
               onFocus={() => setSelectedId(section.layerId)}
               active={selectedId === section.layerId}
@@ -356,11 +376,13 @@ export function SceneEditor({
 }
 
 function EditorPanel({
+  id,
   title,
   children,
   onFocus,
   active = false,
 }: {
+  id?: string;
   title: string;
   children: ReactNode;
   onFocus?: () => void;
@@ -368,6 +390,7 @@ function EditorPanel({
 }) {
   return (
     <details
+      id={id}
       open
       onFocusCapture={onFocus}
       className={cn(

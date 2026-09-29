@@ -4,6 +4,7 @@ import { localeInfo, localizePath, locales, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { siteConfig } from "@/lib/site";
 import { blogPath } from "@/lib/blog";
+import { ourAppsPath, privacyPath } from "@/lib/our-apps";
 import { categoryPath, toolCategories } from "@/lib/tools";
 import { Container } from "@/components/ui/container";
 import { Logo } from "./logo";
@@ -47,6 +48,16 @@ export function SiteFooter({ locale, dict }: { locale: Locale; dict: Dictionary 
           <li>
             <Link href={localizePath(blogPath(), locale)} className={linkClass}>
               {dict.footer.blog}
+            </Link>
+          </li>
+          <li>
+            <Link href={localizePath(ourAppsPath, locale)} className={linkClass}>
+              {dict.footer.apps}
+            </Link>
+          </li>
+          <li>
+            <Link href={localizePath(privacyPath, locale)} className={linkClass}>
+              {dict.footer.privacy}
             </Link>
           </li>
         </FooterColumn>

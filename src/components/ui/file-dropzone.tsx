@@ -9,6 +9,7 @@ import { format } from "@/i18n/format";
 
 export interface DropzoneStrings {
   title: string;
+  tapTitle: string;
   browse: string;
   hint: string;
   replace: string;
@@ -155,7 +156,7 @@ export function FileDropzone({
               onClick={openPicker}
               aria-label={strings.replace}
               title={strings.replace}
-              className="rounded-lg p-2 text-muted transition-colors hover:bg-surface hover:text-foreground"
+              className="flex size-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-foreground"
             >
               <RefreshCw aria-hidden="true" className="size-4" />
             </button>
@@ -167,7 +168,7 @@ export function FileDropzone({
               }}
               aria-label={strings.remove}
               title={strings.remove}
-              className="rounded-lg p-2 text-muted transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+              className="flex size-10 items-center justify-center rounded-lg text-muted transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
             >
               <Trash2 aria-hidden="true" className="size-4" />
             </button>
@@ -211,9 +212,11 @@ export function FileDropzone({
         </span>
         <div>
           <p className={cn("font-medium text-foreground", compact ? "text-sm" : "text-base")}>
-            {strings.title}
+            {/* Touch screens can't drag files in, so they get a simpler instruction. */}
+            <span className="[@media(pointer:coarse)]:hidden">{strings.title}</span>
+            <span className="hidden [@media(pointer:coarse)]:inline">{strings.tapTitle}</span>
           </p>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-1 text-sm text-muted [@media(pointer:coarse)]:hidden">
             <span className="font-medium text-primary-text underline-offset-2 group-hover:underline">
               {strings.browse}
             </span>

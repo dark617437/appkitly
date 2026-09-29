@@ -43,6 +43,8 @@ export function getOgEntries(locale: Locale): OgEntry[] {
         label: label.tool,
       })),
     { key: "blog", title: dict.blog.title, subtitle: dict.blog.description, label: label.guide },
+    { key: "apps", title: dict.ourApps.title, subtitle: dict.ourApps.intro, label: "Incipient Apps" },
+    { key: "privacy", title: dict.privacyPage.title, subtitle: dict.privacyPage.intro, label: "AppKitly" },
     ...getPosts(locale).map((post) => ({
       key: `blog-${post.slug}`,
       title: post.title,

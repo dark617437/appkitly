@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { geistMono, geistSans } from "@/lib/fonts";
+import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
@@ -36,6 +37,7 @@ export function RootDocument({ locale, children }: { locale: Locale; children: R
         </main>
         <SiteFooter locale={locale} dict={dict} />
         <Toaster closeLabel={dict.common.closeNotification} />
+        <Analytics />
       </body>
     </html>
   );

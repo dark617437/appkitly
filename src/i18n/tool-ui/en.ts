@@ -1,6 +1,7 @@
 export const enToolUi = {
   dropzone: {
     title: "Drag & drop an image here",
+    tapTitle: "Tap to choose an image",
     browse: "or click to browse",
     hint: "PNG, JPG or WebP · up to {max}",
     replace: "Replace image",
@@ -12,6 +13,7 @@ export const enToolUi = {
   common: {
     privacy: "Your files never leave your device.",
     readError: "This image couldn't be read. It may be damaged or in an unsupported format.",
+    download: "Download",
     downloadStarted: "Download started.",
     copied: "Copied to clipboard.",
     copyFailed: "Couldn't copy automatically. Please select the text and copy it.",

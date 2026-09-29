@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { localizePath, locales, type Locale } from "@/i18n/config";
 import { blogPath, getPost, getPosts } from "@/lib/blog";
+import { ourAppsPath, privacyPath } from "@/lib/our-apps";
 import { languageAlternates } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site";
 import { categoryPath, toolCategories, toolPath, tools } from "@/lib/tools";
@@ -23,6 +24,8 @@ function indexablePages(): SitemapPage[] {
     ...toolCategories.map((category) => ({ path: categoryPath(category), available: all })),
     ...tools.filter((tool) => tool.status === "available").map((tool) => ({ path: toolPath(tool.slug), available: all })),
     { path: blogPath(), available: all },
+    { path: ourAppsPath, available: all },
+    { path: privacyPath, available: all },
     ...[...postSlugs].map((slug) => {
       const available = locales.filter((locale) => getPost(locale, slug));
       const updated = available.map((locale) => getPost(locale, slug)?.updated ?? "").sort().at(-1);

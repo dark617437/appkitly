@@ -104,7 +104,8 @@ export function ColorField({ label, value, onChange, className, hideLabel }: Col
           }}
           onBlur={() => setDraft(null)}
           aria-invalid={draft !== null && !normalizeHex(draft)}
-          className="h-10 w-full min-w-0 rounded-lg border border-border bg-card px-3 font-mono text-sm text-foreground uppercase shadow-sm hover:border-border-strong focus-visible:border-ring focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring/40 aria-invalid:border-red-500"
+          // 16px on phones: iOS zooms into inputs with smaller text.
+          className="h-10 w-full min-w-0 rounded-lg border border-border bg-card px-3 font-mono text-base text-foreground uppercase shadow-sm sm:text-sm hover:border-border-strong focus-visible:border-ring focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-ring/40 aria-invalid:border-red-500"
         />
       </div>
     </div>
