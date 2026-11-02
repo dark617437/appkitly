@@ -150,7 +150,7 @@ export function OurAppsSection({ locale, className }: { locale: Locale; classNam
             </Link>
           }
         />
-        <ul className="mt-10 grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-10 grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 lg:grid-cols-4">
           {ourApps.map((app) => {
             const text = dict.ourApps.list[app.id];
             return (

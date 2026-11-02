@@ -175,7 +175,7 @@ export const en = {
   ourApps: {
     metaTitle: "Our Android Apps",
     metaDescription:
-      "Android apps by Incipient Apps, the team behind AppKitly: prayer times, a Qibla compass, a status saver, a word game and a football quiz.",
+      "Android apps by Incipient Apps, the team behind AppKitly: prayer times, a Qibla compass, a status saver, a PDF editor, a phone finder and word, football and math games.",
     title: "Our Apps",
     intro: "AppKitly is made by Incipient Apps. Here are the Android apps we build and publish on Google Play.",
     viewOnPlay: "View on Google Play",
@@ -186,7 +186,7 @@ export const en = {
     allApps: "See our apps",
     list: {
       "ezan-vakti": {
-        name: "Ezan Vakti: Namaz Kuran",
+        name: "Namaz Vakti: Kuran ve Sureler",
         category: "Lifestyle",
         description:
           "Prayer times with adhan alerts, the Holy Quran, a Qibla finder, dhikr, religious days and the Ramadan imsak calendar in one simple app.",
@@ -203,16 +203,33 @@ export const en = {
           "A relaxing word puzzle: build words from the given letters, complete the bridges and travel through colorful space-themed levels.",
       },
       "kabe-yonu": {
-        name: "Kabe Yönü: Kıble Pusulası",
+        name: "Kabe Yönü: Kıble Yönünü Bul",
         category: "Lifestyle",
         description:
           "Find the Qibla anywhere with a precise compass, a map view and a camera-based AR mode, plus a digital dhikr counter.",
       },
-      "football-striker": {
-        name: "Football Striker: Quiz Game",
-        category: "Trivia",
+      "gol-yolu": {
+        name: "Gol Yolu: Soccer Puzzle Game",
+        category: "Puzzle game",
         description:
-          "A football quiz for true fans: test what you know about World Cups, transfers, Champions League legends and more.",
+          "Bounce the ball off walls, slip it past mannequins and find the way into the goal. Hundreds of football puzzle levels you can play offline.",
+      },
+      "pdf-craft": {
+        name: "PDF Craft: Edit, Scan & Sign",
+        category: "Productivity",
+        description:
+          "Read and edit PDFs, sign them, scan documents with your camera, and merge or convert files. Free and without ads.",
+      },
+      "power-crash": {
+        name: "Power Crash: Math Runner",
+        category: "Casual game",
+        description:
+          "An endless runner with a math twist: pick the right number gates, smash through obstacles and chase a new record with three lives.",
+      },
+      "telefonumu-bul": {
+        name: "Alkışlayarak Telefonunu Bul",
+        category: "Tools",
+        description: "Lost your phone? Clap and it answers with an alarm, a flashing light and vibration so you can find it.",
       },
     } satisfies Record<OurAppId, { name: string; category: string; description: string }>,
   },

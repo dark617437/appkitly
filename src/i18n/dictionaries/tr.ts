@@ -175,7 +175,7 @@ export const tr: Dictionary = {
   ourApps: {
     metaTitle: "Android Uygulamalarımız",
     metaDescription:
-      "AppKitly'nin arkasındaki ekip Incipient Apps'in Android uygulamaları: ezan vakti, kıble pusulası, durum indirici, kelime oyunu ve futbol bilgi yarışması.",
+      "AppKitly'nin arkasındaki ekip Incipient Apps'in Android uygulamaları: namaz vakti, kıble pusulası, durum indirici, PDF düzenleyici, telefon bulucu, kelime, futbol ve matematik oyunları.",
     title: "Uygulamalarımız",
     intro: "AppKitly, Incipient Apps tarafından geliştirildi. Google Play'de yayınladığımız Android uygulamalarımız aşağıda.",
     viewOnPlay: "Google Play'de görüntüle",
@@ -186,7 +186,7 @@ export const tr: Dictionary = {
     allApps: "Uygulamalarımızı gör",
     list: {
       "ezan-vakti": {
-        name: "Ezan Vakti: Namaz Kuran",
+        name: "Namaz Vakti: Kuran ve Sureler",
         category: "Yaşam tarzı",
         description:
           "Namaz vakitleri ve ezan alarmı, Kur'an-ı Kerim, kıble bulucu, zikir, dini günler ve Ramazan imsakiyesi tek, sade bir uygulamada.",
@@ -202,16 +202,32 @@ export const tr: Dictionary = {
         description: "Verilen harflerden kelimeler üret, köprüleri tamamla ve uzay temalı renkli seviyelerde ilerle.",
       },
       "kabe-yonu": {
-        name: "Kabe Yönü: Kıble Pusulası",
+        name: "Kabe Yönü: Kıble Yönünü Bul",
         category: "Yaşam tarzı",
         description:
           "Hassas pusula, harita ve kamera destekli AR modu ile kıbleyi her yerde bul. Dijital zikirmatik de içinde.",
       },
-      "football-striker": {
-        name: "Football Striker: Quiz Game",
-        category: "Bilgi yarışması",
+      "gol-yolu": {
+        name: "Gol Yolu: Futbol Bulmaca Oyunu",
+        category: "Bulmaca oyunu",
         description:
-          "Gerçek taraftarlar için futbol bilgi yarışması: Dünya Kupaları, transferler, Şampiyonlar Ligi efsaneleri ve daha fazlası.",
+          "Topu duvarlardan sektir, mankenlerin yanından geçir ve golün yolunu bul. İnternetsiz oynanan yüzlerce futbol bulmaca bölümü.",
+      },
+      "pdf-craft": {
+        name: "PDF Craft: Düzenle Tara İmzala",
+        category: "Verimlilik",
+        description:
+          "PDF oku, metin düzenle ve imzala, kamerayla belge tara, dosyaları birleştir ve dönüştür. Ücretsiz ve reklamsız.",
+      },
+      "power-crash": {
+        name: "Power Crash: Math Runner",
+        category: "Gündelik oyun",
+        description: "Matematikli sonsuz koşu: doğru sayı kapılarını seç, engelleri aş ve üç canla yeni rekorlar kır.",
+      },
+      "telefonumu-bul": {
+        name: "Alkışlayarak Telefonunu Bul",
+        category: "Araçlar",
+        description: "Telefonunu mu kaybettin? Alkışla, telefonun alarm, flaş ve titreşimle yerini göstersin.",
       },
     },
   },
