@@ -43,7 +43,10 @@ function AppCard({ app, locale }: { app: OurApp; locale: Locale }) {
       <div className="flex items-start gap-4">
         <AppIcon app={app} locale={locale} size={64} />
         <div className="min-w-0">
-          <h2 className="text-base font-semibold tracking-tight text-foreground">{text.name}</h2>
+          {/* App names are names: browser translation leaves them alone. */}
+          <h2 translate="no" className="text-base font-semibold tracking-tight text-foreground">
+            {text.name}
+          </h2>
           <p className="mt-1 text-sm text-muted">
             {developerName} · {text.category}
           </p>
@@ -164,7 +167,9 @@ export function OurAppsSection({ locale, className }: { locale: Locale; classNam
                 >
                   <AppIcon app={app} locale={locale} size={56} />
                   <span className="min-w-0">
-                    <span className="line-clamp-2 block text-sm font-semibold text-foreground">{text.name}</span>
+                    <span translate="no" className="line-clamp-2 block text-sm font-semibold text-foreground">
+                      {text.name}
+                    </span>
                     <span className="mt-0.5 block text-xs text-muted">{text.category}</span>
                   </span>
                 </a>

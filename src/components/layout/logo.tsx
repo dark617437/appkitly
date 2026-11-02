@@ -22,7 +22,8 @@ export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <LogoMark />
-      <span className="text-lg font-semibold tracking-tight text-foreground">
+      {/* A name, not words: browser translation leaves it alone. */}
+      <span translate="no" className="text-lg font-semibold tracking-tight text-foreground">
         App<span className="text-primary-text">Kitly</span>
       </span>
     </span>
