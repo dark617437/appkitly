@@ -199,7 +199,7 @@ export const tr: Dictionary = {
       "kelime-koprusu": {
         name: "Kelime Köprüsü: Kelime Oyunu",
         category: "Kelime oyunu",
-        description: "Verilen harflerden kelimeler üret, köprüleri tamamla ve uzay temalı renkli seviyelerde ilerle.",
+        description: "Harfleri birleştirip kelimeleri bul, köprüleri tamamla ve Ege köylerinden karlı dağlara uzanan manzaralı bölümlerde ilerle.",
       },
       "kabe-yonu": {
         name: "Kabe Yönü: Kıble Yönünü Bul",

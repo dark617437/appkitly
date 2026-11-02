@@ -197,10 +197,10 @@ export const en = {
         description: "Save the statuses your contacts share and create eye-catching posts with a built-in design studio.",
       },
       "kelime-koprusu": {
-        name: "Word Bridge Battle",
+        name: "Kelime Köprüsü: Word Game",
         category: "Word game",
         description:
-          "A relaxing word puzzle: build words from the given letters, complete the bridges and travel through colorful space-themed levels.",
+          "A relaxing Turkish word puzzle: join the letters to find words, complete the bridges and travel through scenic levels, from Aegean villages to snowy peaks.",
       },
       "kabe-yonu": {
         name: "Kabe Yönü: Kıble Yönünü Bul",

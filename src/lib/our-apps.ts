@@ -38,7 +38,7 @@ export const ourApps: OurApp[] = [
   {
     id: "kelime-koprusu",
     packageId: "com.kksavasi.kelimekoprusu",
-    icon: { en: "/apps/kelime-koprusu-en.webp", tr: "/apps/kelime-koprusu-tr.webp" },
+    icon: "/apps/kelime-koprusu.webp",
     schemaCategory: "GameApplication",
   },
   {
