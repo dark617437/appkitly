@@ -200,7 +200,7 @@ export const en = {
         name: "Kelime Köprüsü: Word Game",
         category: "Word game",
         description:
-          "A relaxing Turkish word puzzle: join the letters to find words, complete the bridges and travel through scenic levels, from Aegean villages to snowy peaks.",
+          "A word puzzle in Turkish and English: join the letters to find words across 2000 levels and 40 scenic landscapes, with weekly tournaments, races, daily quests and teams.",
       },
       "kabe-yonu": {
         name: "Kabe Yönü: Kıble Yönünü Bul",
